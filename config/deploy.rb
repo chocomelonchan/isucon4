@@ -21,20 +21,21 @@ namespace :bench do
   task :exec do
     on roles(:app), in: :parallel, limit: 4 do
       within "/home/#{fetch(:user)}" do
-        execute "curl --silent --data-urlencode \"format=html\" --data-urlencode \"source=@here <span style='color:white' class='label label-warning'>benchmark</span> #{ENV['USER']} starting bench\" https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828"
+        invoke 'notify:start_bench'
         execute './benchmarker bench --host localhost | tee ~/bench.log'
-        execute "curl --silent --data-urlencode \"format=html\" --data-urlencode \"source=@here <span style='color:white' class='label label-warning'>benchmark</span> #{ENV['USER']} finished bench<br><pre><code>`cat ~/bench.log`</code></pre>\" https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828"
+        invoke 'notify:finish _bench'
       end
     end
   end
+  before 'bench:exec', 'notify:start_bench'
+  after  'bench:exec', 'notify:finish_bench'
 end
 
 namespace :deploy do
   after :finishing, 'deploy:cleanup'
   after 'deploy:publishing', 'deploy:restart'
   before 'deploy:updated', 'npm:install'
-  before 'npm:restart', 'init:load'
   after 'deploy:restart', 'npm:restart'
-  before 'deploy:starting', 'notify:start'
-  after 'deploy', 'notify:finish'
+  before 'deploy:starting', 'notify:start_deploy'
+  after 'deploy', 'notify:finish_deploy'
 end
