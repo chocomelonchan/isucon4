@@ -21,7 +21,7 @@ var globalConfig = {
 };
 
 var mysqlPool = mysql.createPool({
-  host: process.env.ISU4_DB_HOST || 'localhost',
+  socketPath: process.env.ISU4_DB_SOCKET_FILE_PATH || '/var/lib/mysql/mysql.sock',
   user: process.env.ISU4_DB_USER || 'root',
   password: process.env.ISU4_DB_PASSWORD || '',
   database: process.env.ISU4_DB_NAME || 'isu4_qualifier'
