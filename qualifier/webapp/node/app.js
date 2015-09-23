@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config({silent: true});
+
 const _ = require('lodash');
 const async = require('async');
 const bodyParser = require('body-parser');
