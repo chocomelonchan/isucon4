@@ -18,6 +18,11 @@ set :rsync_options, %w[--exclude=.git --exclude=current/qualifier/webapp/node/no
 set :linked_dirs, %w(qualifier/webapp/node/node_modules)
 set :keep_releases, 20
 
+namespace :bench do
+  # ここにベンチするコードを書く
+  # nodeを起動するやつをnpm.capへ集める
+end
+
 namespace :deploy do
   desc 'Add and push deploy tags'
   task :push_tags do
@@ -28,21 +33,6 @@ namespace :deploy do
     puts `git fetch origin`
     puts `git tag #{time} -m "Deployed by #{user} <#{email}>" origin/#{fetch(:branch)}`
     puts `git push --tags origin`
-  end
-
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-    end
-  end
-
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
   end
 
   after :finishing, 'deploy:cleanup'

@@ -4,9 +4,9 @@ namespace :npm do
   desc 'npm install'
   task :install do
     on roles(:app), in: :parallel, limit: 4 do
-      within release_path do
-        system 'ls qualifier/webapp/node'
-        system 'cd qualifier/webapp/node && npm install --production'
+      within release_path.join('qualifier/webapp/node') do
+        execute :npm, :prune, '--production'
+        execute :npm, :install, '--production'
       end
     end
   end

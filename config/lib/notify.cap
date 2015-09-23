@@ -25,17 +25,17 @@ namespace :notify do
 
   def deploy_link_diff()
     if fetch(:current_revision) != fetch(:previous_revision)
-      "<a href='http://github.com/pixiv/#{fetch(:application)}/compare/#{fetch(:previous_revision)}...#{fetch(:current_revision)}' style='color:white' class='label label-success'>diff</a>"
+      "<a href='https://github.com/chocomelonchan/isucon4/compare/#{fetch(:previous_revision)}...#{fetch(:current_revision)}' style='color:white' class='label label-success'>diff</a>"
     end
   end
 
   task :start do
-    deploy_message = "@here #{deploy_label_branch} #{ENV['USER']}がデブロイはじめたぞ(۶•̀ᴗ•́)۶"
+    deploy_message = "@choco_biimu #{deploy_label_branch} #{ENV['USER']}がデブロイはじめたっぽい"
     notify_idobata(deploy_message)
   end
 
   task :finish do
-    deploy_message = "@here #{deploy_label_branch} #{deploy_link_diff} #{ENV['USER']}のデブロイが終わったぞい٩(ˊᗜˋ*)و"
+    deploy_message = "@choco_biimu #{deploy_label_branch} #{deploy_link_diff} #{ENV['USER']}のデブロイ終わったっぽい"
     notify_idobata(deploy_message)
   end
 end
