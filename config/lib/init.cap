@@ -1,0 +1,10 @@
+namespace :init do
+  desc 'load init.sh'
+  task :load do
+    on roles(:app), in: :parallel, limit: 4 do
+      within "/home/#{fetch(:user)}" do
+        execute "./init.sh"
+      end
+    end
+  end
+end
