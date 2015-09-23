@@ -1,0 +1,12 @@
+require 'json'
+
+namespace :npm do
+  desc 'npm install'
+  task :install do
+    on roles(:app), in: :parallel, limit: 4 do
+      within release_path do
+        sh 'cd qualifier/webapp/node && npm install --production'
+      end
+    end
+  end
+end

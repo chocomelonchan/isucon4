@@ -1,0 +1,65 @@
+namespace :notify do
+  class NotifyException < StandardError; end
+  def notify_idobata(msg)
+    puts "notify to idobata #sketch"
+    puts revision_log_message
+    begin
+      require 'uri'
+      require 'net/https'
+      Net::HTTP.version_1_2
+      https = Net::HTTP.new('idobata.io', 443)
+      https.use_ssl = true
+      req = Net::HTTP::Post.new('https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828')
+      req.set_form_data({"source" => msg, "format" => 'html'})
+      res = https.request(req)
+    rescue NotifyException => e
+      raise e.message
+    rescue => e
+      warn e.message
+    end
+  end
+
+  def deploy_label_branch()
+    case fetch(:branch)
+    when :master
+      "<a href='https://github.com/pixiv/sketch/' style='color:white' class='label label-primary'>#{fetch(:branch)}</a>"
+    else
+      "<a href='https://github.com/pixiv/sketch/tree/#{fetch(:branch)}' style='color:white' class='label label-default'>#{fetch(:branch)}</a>"
+    end
+  end
+
+  def deploy_label_stage()
+    case fetch(:stage)
+    when :production
+      "<a href='https://sketch.pixiv.net' style='color:white' class='label label-primary'>#{fetch(:stage)}</a>"
+    when :staging
+      "<a href='http://sketch.stage.misoshi.ru' style='color:white' class='label label-info'>#{fetch(:stage)}</a>"
+    when :sandbox
+      "<a href='http://sketch.geta6.vm.misoshi.ru' style='color:white' class='label label-default'>#{fetch(:stage)}</a>"
+    else
+      "<span style='color:white' class='label label-default'>#{fetch(:stage)}</span>"
+    end
+  end
+
+  def deploy_link_diff()
+    if fetch(:current_revision) != fetch(:previous_revision)
+      "<a href='http://github.com/pixiv/#{fetch(:application)}/compare/#{fetch(:previous_revision)}...#{fetch(:current_revision)}' style='color:white' class='label label-success'>diff</a>"
+    end
+  end
+
+  task :start do
+    deploy_message = "#{deploy_label_branch} #{deploy_label_stage} #{ENV['USER']}がデブロイはじめたぞ(۶•̀ᴗ•́)۶"
+    if fetch(:stage) == :production
+      deploy_message = "@here #{deploy_message}"
+    end
+    notify_idobata(deploy_message)
+  end
+
+  task :finish do
+    deploy_message = "#{deploy_label_branch} #{deploy_label_stage} #{deploy_link_diff} #{ENV['USER']}のデブロイが終わったぞい٩(ˊᗜˋ*)و"
+    if fetch(:stage) == :production
+      deploy_message = "@here #{deploy_message}"
+    end
+    notify_idobata(deploy_message)
+  end
+end
