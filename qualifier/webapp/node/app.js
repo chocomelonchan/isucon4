@@ -1,15 +1,17 @@
-var _ = require('underscore');
-var async = require('async');
-var bodyParser = require('body-parser');
-var crypto = require('crypto');
-var ect = require('ect');
-var express = require('express');
-var mysql = require('mysql');
-var path = require('path');
-var session = require('express-session');
-var strftime = require('strftime');
+'use strict';
 
-var app = express();
+const _ = require('lodash');
+const async = require('async');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const ect = require('ect');
+const express = require('express');
+const mysql = require('mysql2');
+const path = require('path');
+const session = require('express-session');
+const strftime = require('strftime');
+
+const app = express();
 
 var globalConfig = {
   userLockThreshold: process.env.ISU4_USER_LOCK_THRESHOLD || 3,
