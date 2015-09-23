@@ -21,6 +21,7 @@ namespace :bench do
   task :exec do
     on roles(:app), in: :parallel, limit: 4 do
       within "/home/#{fetch(:user)}" do
+        execute 'curl --silent --data-urlencode "format=html" --data-urlencode "source=<span style=\'color:white\' class=\'label label-primary\'>bench</span>べんちはじめたよ" https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828'
         execute './benchmarker bench --host localhost | tee ~/bench.log'
         execute 'curl --silent --data-urlencode "format=html" --data-urlencode "source=<span style=\'color:white\' class=\'label label-primary\'>bench</span><br><pre><code>`cat ~/bench.log`</code></pre>" https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828'
       end

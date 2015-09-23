@@ -4,7 +4,6 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var ect = require('ect');
 var express = require('express');
-var logger = require('morgan');
 var mysql = require('mysql');
 var path = require('path');
 var session = require('express-session');
