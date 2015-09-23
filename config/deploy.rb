@@ -41,7 +41,7 @@ namespace :deploy do
   after :finishing, 'deploy:cleanup'
   after 'deploy:publishing', 'deploy:restart'
   before 'deploy:updated', 'npm:install'
-  # after 'deploy:restart', 'npm:restart'
+  after 'deploy:restart', 'npm:restart'
   before 'deploy:starting', 'notify:start'
   after 'deploy', 'notify:finish'
 end

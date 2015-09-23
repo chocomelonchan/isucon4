@@ -10,4 +10,13 @@ namespace :npm do
       end
     end
   end
+
+  desc 'npm restart'
+  task :restart do
+    on roles(:app), in: :parallel, limit: 4 do
+      within release_path.join('qualifier/webapp/node') do
+        execute :npm, :restart
+      end
+    end
+  end
 end

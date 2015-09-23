@@ -3,6 +3,10 @@
   "description": "for ISUCON4 qualifier",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "stop": "pm2 kill",
+    "start": "pm2 start app.js -i max"
+  },
   "dependencies": {
     "async": "^0.9.0",
     "body-parser": "^1.8.2",
