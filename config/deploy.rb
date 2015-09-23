@@ -4,10 +4,6 @@ set :user, 'isucon'
 
 ask :branch, :master
 
-set :nvm_type, :user
-set :nvm_node, 'v4.1.0'
-set :nvm_map_bins, %w{node npm}
-
 set :ssh_options,
   auth_methods: %w(publickey),
   user: fetch(:user)
@@ -22,22 +18,17 @@ set :linked_dirs, %w(qualifier/webapp/node/node_modules)
 set :keep_releases, 20
 
 namespace :bench do
-  # ここにベンチするコードを書く
-  # nodeを起動するやつをnpm.capへ集める
+  task :exec do
+    on roles(:app), in: :parallel, limit: 4 do
+      within "/home/#{fetch(:user)}" do
+        execute './benchmarker bench --host localhost:8080 | tee ~/bench.log'
+        execute 'curl --silent --data-urlencode "format=html" --data-urlencode "source=<span style=\'color:white\' class=\'label label-primary\'>bench</span><br><code>`cat ~/bench.log`</code>" https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828'
+      end
+    end
+  end
 end
 
 namespace :deploy do
-  desc 'Add and push deploy tags'
-  task :push_tags do
-    user = `git config --get user.name`.chomp
-    email = `git config --get user.email`.chomp
-    time = Time.now.strftime('%Y%m%d-%H%M')
-
-    puts `git fetch origin`
-    puts `git tag #{time} -m "Deployed by #{user} <#{email}>" origin/#{fetch(:branch)}`
-    puts `git push --tags origin`
-  end
-
   after :finishing, 'deploy:cleanup'
   after 'deploy:publishing', 'deploy:restart'
   before 'deploy:updated', 'npm:install'
