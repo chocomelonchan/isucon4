@@ -20,25 +20,7 @@ namespace :notify do
   end
 
   def deploy_label_branch()
-    case fetch(:branch)
-    when :master
-      "<a href='https://github.com/pixiv/sketch/' style='color:white' class='label label-primary'>#{fetch(:branch)}</a>"
-    else
-      "<a href='https://github.com/pixiv/sketch/tree/#{fetch(:branch)}' style='color:white' class='label label-default'>#{fetch(:branch)}</a>"
-    end
-  end
-
-  def deploy_label_stage()
-    case fetch(:stage)
-    when :production
-      "<a href='https://sketch.pixiv.net' style='color:white' class='label label-primary'>#{fetch(:stage)}</a>"
-    when :staging
-      "<a href='http://sketch.stage.misoshi.ru' style='color:white' class='label label-info'>#{fetch(:stage)}</a>"
-    when :sandbox
-      "<a href='http://sketch.geta6.vm.misoshi.ru' style='color:white' class='label label-default'>#{fetch(:stage)}</a>"
-    else
-      "<span style='color:white' class='label label-default'>#{fetch(:stage)}</span>"
-    end
+    "<span style='color:white' class='label label-primary'>#{fetch(:branch)}</span>"
   end
 
   def deploy_link_diff()
@@ -48,18 +30,12 @@ namespace :notify do
   end
 
   task :start do
-    deploy_message = "#{deploy_label_branch} #{deploy_label_stage} #{ENV['USER']}がデブロイはじめたぞ(۶•̀ᴗ•́)۶"
-    if fetch(:stage) == :production
-      deploy_message = "@here #{deploy_message}"
-    end
+    deploy_message = "@here #{deploy_label_branch} #{ENV['USER']}がデブロイはじめたぞ(۶•̀ᴗ•́)۶"
     notify_idobata(deploy_message)
   end
 
   task :finish do
-    deploy_message = "#{deploy_label_branch} #{deploy_label_stage} #{deploy_link_diff} #{ENV['USER']}のデブロイが終わったぞい٩(ˊᗜˋ*)و"
-    if fetch(:stage) == :production
-      deploy_message = "@here #{deploy_message}"
-    end
+    deploy_message = "@here #{deploy_label_branch} #{deploy_link_diff} #{ENV['USER']}のデブロイが終わったぞい٩(ˊᗜˋ*)و"
     notify_idobata(deploy_message)
   end
 end

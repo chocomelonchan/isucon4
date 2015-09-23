@@ -15,7 +15,7 @@ set :deploy_to, "/home/#{fetch(:user)}/#{fetch(:application)}"
 set :scm, :git
 
 set :rsync_options, %w[--exclude=.git --exclude=current/qualifier/webapp/node/node_modules/]
-set :linked_dirs, %w(current/qualifier/webapp/node/node_modules)
+set :linked_dirs, %w(qualifier/webapp/node/node_modules)
 set :keep_releases, 20
 
 namespace :deploy do
@@ -49,6 +49,6 @@ namespace :deploy do
   after 'deploy:publishing', 'deploy:restart'
   before 'deploy:updated', 'npm:install'
   # after 'deploy:restart', 'npm:restart'
-  # before 'deploy:starting', 'notify:start'
-  # after 'deploy', 'notify:finish'
+  before 'deploy:starting', 'notify:start'
+  after 'deploy', 'notify:finish'
 end
