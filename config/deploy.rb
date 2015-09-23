@@ -14,8 +14,8 @@ SSHKit.config.command_map[:rake] = 'bundle exec rake'
 set :deploy_to, "/home/#{fetch(:user)}/#{fetch(:application)}"
 set :scm, :git
 
-set :rsync_options, %w[--exclude=.git --exclude=node_modules/]
-set :linked_dirs, %w(node_modules)
+set :rsync_options, %w[--exclude=.git --exclude=current/qualifier/webapp/node/node_modules/]
+set :linked_dirs, %w(current/qualifier/webapp/node/node_modules)
 set :keep_releases, 20
 
 namespace :deploy do
