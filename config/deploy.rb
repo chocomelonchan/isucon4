@@ -4,8 +4,11 @@ set :user, 'isucon'
 
 ask :branch, :master
 
+set :nvm_type, :user
+set :nvm_node, 'v4.1.0'
+set :nvm_map_bins, %w{node npm}
+
 set :ssh_options,
-  forward_agent: true,
   auth_methods: %w(publickey),
   user: fetch(:user)
 
