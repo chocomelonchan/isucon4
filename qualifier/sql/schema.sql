@@ -2,8 +2,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `login` varchar(255) NOT NULL UNIQUE,
   `password_hash` varchar(255) NOT NULL,
-  `salt` varchar(255) NOT NULL,
-  INDEX index_login(login)
+  `salt` varchar(255) NOT NULL
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `login_log` (
