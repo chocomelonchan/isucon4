@@ -1,19 +1,16 @@
-require 'json'
-
 namespace :notify do
   class NotifyException < StandardError; end
-  def slack_send(msg)
-    puts "notify to slack"
+  def notify_idobata(msg)
+    puts "notify to idobata #sketch"
     puts revision_log_message
     begin
       require 'uri'
       require 'net/https'
       Net::HTTP.version_1_2
-      https = Net::HTTP.new('hooks.slack.com', 443)
+      https = Net::HTTP.new('idobata.io', 443)
       https.use_ssl = true
-      req = Net::HTTP::Post.new('https://hooks.slack.com/services/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')
-      json = {channel: '#isucon5', username: 'webhookbot', text: msg, icon_emoji: ':ghost:'}.to_json
-      req.set_form_data({"payload" => json})
+      req = Net::HTTP::Post.new('https://idobata.io/hook/custom/1a49caad-d0c8-4cc5-9157-e6e60366a828')
+      req.set_form_data({"source" => msg, "format" => 'html'})
       res = https.request(req)
     rescue NotifyException => e
       raise e.message
@@ -22,24 +19,23 @@ namespace :notify do
     end
   end
 
-  task :start_deploy do
-    slack_send("@channel #{ENV['USER']}がデブロイはじめたっぽい")
+  def deploy_label_branch()
+    "<span style='color:white' class='label label-primary'>#{fetch(:branch)}</span>"
   end
 
-  task :finish_deploy do
-    slack_send("@channel #{ENV['USER']}のデブロイがおわったっぽい https://github.com/chocomelonchan/isucon4/compare/#{fetch(:previous_revision)}...#{fetch(:current_revision)}")
+  def deploy_link_diff()
+    if fetch(:current_revision) != fetch(:previous_revision)
+      "<a href='https://github.com/chocomelonchan/isucon4/compare/#{fetch(:previous_revision)}...#{fetch(:current_revision)}' style='color:white' class='label label-success'>diff</a>"
+    end
   end
 
-  task :start_bench do
-    slack_send("@channel #{ENV['USER']}がベンチはじめたっぽい")
+  task :start do
+    deploy_message = "@choco_biimu #{deploy_label_branch} #{ENV['USER']}がデブロイはじめたっぽい"
+    notify_idobata(deploy_message)
   end
 
-  task :finish_bench do
-    slack_send("@channel #{ENV['USER']}のベンチが終わったっぽい\n#{`cat ~/bench.log`}")
+  task :finish do
+    deploy_message = "@choco_biimu #{deploy_label_branch} #{deploy_link_diff} #{ENV['USER']}のデブロイ終わったっぽい"
+    notify_idobata(deploy_message)
   end
-
-  task :test do
-    slack_send('test')
-  end
-
 end
