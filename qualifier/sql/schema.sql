@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(255) NOT NULL UNIQUE,
   `password_hash` varchar(255) NOT NULL,
   `salt` varchar(255) NOT NULL
+  INDEX index_login(login)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `login_log` (
@@ -12,6 +13,6 @@ CREATE TABLE IF NOT EXISTS `login_log` (
   `login` varchar(255) NOT NULL,
   `ip` varchar(255) NOT NULL,
   `succeeded` tinyint NOT NULL,
-   INDEX ip_succeeded(ip, succeeded),
-   INDEX userid_succeeded(user_id, succeeded)
+   INDEX index_ip_succeeded(ip, succeeded),
+   INDEX index_userid_succeeded(user_id, succeeded)
 ) DEFAULT CHARSET=utf8;
