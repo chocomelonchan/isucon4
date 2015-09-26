@@ -15,4 +15,4 @@ CREATE TABLE IF NOT EXISTS `login_log` (
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX index_ip_succeeded ON login_log (ip, succeeded);
-CREATE INDEX index_login_succeeded ON login_log (login, succeeded);
+CREATE INDEX index_login_succeeded ON login_log (user_id, succeeded);
